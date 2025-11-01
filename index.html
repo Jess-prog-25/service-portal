@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Portal - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8fa68f 0%, #a8c09a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .logo h1 {
+            color: #8fa68f;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 1em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #2d3e2d;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8fa68f;
+            box-shadow: 0 0 0 3px rgba(143, 166, 143, 0.1);
+        }
+        
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #8fa68f 0%, #a8c09a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(143, 166, 143, 0.4);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            display: none;
+            font-size: 0.95em;
+        }
+        
+        .loading:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .demo-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+            font-size: 0.9em;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .demo-info strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .demo-credentials {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        .footer a {
+            color: #8fa68f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 30px 25px;
+            }
+            
+            .logo h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">🌿</div>
+            <h1>gardenKeeper®</h1>
+            <p>Willkommen im Kundenportal</p>
+        </div>
+        
+        <div class="error-message" id="errorMsg"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">E-Mail-Adresse</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    required 
+                    placeholder="ihre@email.de"
+                    autocomplete="email"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    required
+                    placeholder="Ihr Passwort"
+                    autocomplete="current-password"
+                >
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                🌿 Anmelden
+            </button>
+        </form>
+        
+        <div class="loading" id="loading">
+            Anmeldung wird geprüft
+        </div>
+        
+        <div class="demo-info">
+            <strong>🧪 Test-Zugangsdaten:</strong>
+            <div class="demo-credentials">
+                📧 max.mustermann@email.de<br>
+                🔑 Garten2025!
+            </div>
+        </div>
+        
+        <div class="footer">
+            Probleme beim Login? 
+            <a href="tel:+4968193784009">+49 681 9378 4009</a>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'https://script.google.com/macros/gakesto.de/s/AKfycbyCcU7JS5fWpEf265IfcWoWYHVgs4ZslkchOzeVdXVaOWkkwbu5ZjnZxbK9boXkyF1Y/exec';
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const loading = document.getElementById('loading');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            errorMsg.style.display = 'none';
+            loading.style.display = 'block';
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Wird geprüft...';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    localStorage.setItem('kundenId', result.data.kundenId);
+                    localStorage.setItem('vorname', result.data.vorname);
+                    localStorage.setItem('nachname', result.data.nachname);
+                    localStorage.setItem('email', result.data.email);
+                    localStorage.setItem('telefon', result.data.telefon);
+                    
+                    loginBtn.textContent = '✅ Erfolgreich!';
+                    loginBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 500);
+                    
+                } else {
+                    showError(result.message || 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+                }
+                
+            } catch(error) {
+                console.error('Login-Fehler:', error);
+                showError('Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung.');
+            } finally {
+                loading.style.display = 'none';
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🌿 Anmelden';
+            }
+        });
+        
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        window.onload = function() {
+            document.getElementById('email').focus();
+        };
+    </script>
+</body>
+</html>
